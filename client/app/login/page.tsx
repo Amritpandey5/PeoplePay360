@@ -9,9 +9,13 @@ import {
     LockKeyhole,
     Mail,
     ShieldCheck,
+    Users,
 } from "lucide-react";
 
+type LoginType = "employee" | "manager";
+
 export default function LoginPage() {
+    const [loginType, setLoginType] = useState<LoginType>("employee");
     const [showPassword, setShowPassword] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
     const [email, setEmail] = useState("");
@@ -155,6 +159,40 @@ export default function LoginPage() {
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-4">
+                        <div>
+                            <label className="mb-2 block text-sm font-semibold text-slate-700">
+                                Login as
+                            </label>
+
+                            <div className="grid grid-cols-2 gap-3">
+                                <button
+                                    type="button"
+                                    onClick={() => setLoginType("employee")}
+                                    className={`flex h-12 items-center justify-center gap-2 rounded-xl border text-sm font-semibold transition ${
+                                        loginType === "employee"
+                                            ? "border-emerald-600 bg-emerald-50 text-[#063d2f] ring-4 ring-emerald-600/10"
+                                            : "border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:bg-slate-50"
+                                    }`}
+                                >
+                                    <Users size={17} />
+                                    Employee
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onClick={() => setLoginType("manager")}
+                                    className={`flex h-12 items-center justify-center gap-2 rounded-xl border text-sm font-semibold transition ${
+                                        loginType === "manager"
+                                            ? "border-emerald-600 bg-emerald-50 text-[#063d2f] ring-4 ring-emerald-600/10"
+                                            : "border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:bg-slate-50"
+                                    }`}
+                                >
+                                    <ShieldCheck size={17} />
+                                    Manager
+                                </button>
+                            </div>
+                        </div>
+
                         <div>
                             <label
                                 htmlFor="email"
