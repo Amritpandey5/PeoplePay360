@@ -1,51 +1,42 @@
-export type UserRole =
-    | "employee"
-    | "hr_manager"
-    | "hr_payroll_user"
-    | "hr_payroll_manager"
-    | "admin";
+export type PaymentBasis =
+    | "daily"
+    | "weekly"
+    | "monthly";
 
-export type EmployeeType =
-    | "permanent"
-    | "temporary"
-    | "contract"
-    | "intern";
 
-export type EmploymentStatus =
-    | "active"
-    | "probation"
-    | "on_leave"
-    | "inactive";
+export type Gender =
+    | "male"
+    | "female"
+    | "other"
+    | "prefer_not_to_say";
 
 export type Employee = {
     id: string;
-    employeeId: string;
-    fullName: string;
-    email: string;
-    phone: string;
-    parentName: string;
-    address: string;
-    location: string;
-    education: string;
-    company: string;
-    department: string;
-    jobPosition: string;
-    hrManagerId: string;
-    reportingManagerId: string;
-    joiningDate: string;
-    employeeType: EmployeeType;
-    employmentStatus: EmploymentStatus;
-    workEmail: string;
-    createdAt: string;
-};
-
-export type User = {
-    id: string;
-    employeeId?: string;
     name: string;
     email: string;
-    role: UserRole;
+    phone: string;
+    gender: string;
+    password: string;
+    dateOfJoining: string;
+    dateOfBirth: string;
+    paymentBasis: PaymentBasis;
+    workingHours: number;
+    workingDays: number;
+    basicSalary: number;
+    hra: number;
+    allowances: number;
+    deductions: number;
+    location: string;
+    role: string;
+    status: "active" | "inactive";
+    createdAt: string;
+};
+export type User = {
+    id: string;
+    name: string;
+    email: string;
+    role: string;
+    employeeId?: string;
     isActive: boolean;
-    passwordConfigured: boolean;
     createdAt: string;
 };
