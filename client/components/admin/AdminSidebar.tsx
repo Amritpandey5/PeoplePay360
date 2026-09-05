@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import {
     Users,
@@ -20,6 +19,7 @@ import {
     ChevronLeft,
     LogOut,
     Building2,
+    LayoutDashboard,
 } from "lucide-react";
 
 type NavigationItem = {
@@ -28,7 +28,17 @@ type NavigationItem = {
     icon: React.ElementType;
 };
 
+type AdminSidebarProps = {
+    collapsed: boolean;
+    setCollapsed: (value: boolean) => void;
+};
+
 const mainNavigation: NavigationItem[] = [
+    {
+        label: "Overview",
+        href: "/admin",
+        icon: LayoutDashboard,
+    },
     {
         label: "Employees",
         href: "/admin/employees",
@@ -143,7 +153,9 @@ function NavigationSection({
                                 className="shrink-0 text-emerald-200/60 transition group-hover:text-emerald-200"
                             />
 
-                            {!collapsed && <span>{item.label}</span>}
+                            {!collapsed && (
+                                <span>{item.label}</span>
+                            )}
                         </Link>
                     );
                 })}
@@ -152,13 +164,13 @@ function NavigationSection({
     );
 }
 
-export default function AdminSidebar() {
-    const [collapsed, setCollapsed] = useState(false);
-    const [profileOpen, setProfileOpen] = useState(false);
-
+export default function AdminSidebar({
+    collapsed,
+    setCollapsed,
+}: AdminSidebarProps) {
     return (
         <aside
-            className={`fixed inset-y-0 left-0 z-50 flex h-screen shrink-0 flex-col overflow-hidden bg-[#063d2f] text-white shadow-xl transition-all duration-300 ${
+            className={`fixed inset-y-0 left-0 z-50 flex h-screen flex-col overflow-hidden bg-[#063d2f] text-white shadow-xl transition-all duration-300 ${
                 collapsed ? "w-[82px]" : "w-[270px]"
             }`}
         >
@@ -179,7 +191,9 @@ export default function AdminSidebar() {
                     title={collapsed ? "PeoplePay360" : undefined}
                 >
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#063d2f] shadow-lg">
-                        <span className="text-lg font-bold">P</span>
+                        <span className="text-lg font-bold">
+                            P
+                        </span>
                     </div>
 
                     {!collapsed && (
@@ -221,7 +235,7 @@ export default function AdminSidebar() {
                 )}
             </div>
 
-            <div className="relative min-h-0 flex-1 overflow-y-auto px-3 py-6 [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.12)_transparent]">
+            <div className="relative min-h-0 flex-1 overflow-y-auto px-3 py-6 [scrollbar-color:rgba(255,255,255,0.12)_transparent] [scrollbar-width:thin]">
                 <NavigationSection
                     title="Workforce"
                     items={mainNavigation}
@@ -251,9 +265,6 @@ export default function AdminSidebar() {
                 <div className="relative">
                     <button
                         type="button"
-                        onClick={() =>
-                            setProfileOpen((value) => !value)
-                        }
                         className={`flex w-full items-center rounded-xl p-2 transition hover:bg-white/8 ${
                             collapsed
                                 ? "justify-center"
@@ -281,44 +292,10 @@ export default function AdminSidebar() {
                         {!collapsed && (
                             <ChevronDown
                                 size={15}
-                                className={`shrink-0 text-emerald-100/40 transition ${
-                                    profileOpen
-                                        ? "rotate-180"
-                                        : ""
-                                }`}
+                                className="shrink-0 text-emerald-100/40"
                             />
                         )}
                     </button>
-
-                    {profileOpen && !collapsed && (
-                        <div className="absolute bottom-full left-0 mb-2 w-full rounded-xl border border-white/10 bg-[#07513e] p-1.5 shadow-2xl">
-                            <button
-                                type="button"
-                                className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-xs font-medium text-emerald-50/80 transition hover:bg-white/8 hover:text-white"
-                            >
-                                <Building2 size={16} />
-                                Company Profile
-                            </button>
-
-                            <button
-                                type="button"
-                                className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-xs font-medium text-emerald-50/80 transition hover:bg-white/8 hover:text-white"
-                            >
-                                <Settings size={16} />
-                                Account Settings
-                            </button>
-
-                            <div className="my-1 border-t border-white/8" />
-
-                            <button
-                                type="button"
-                                className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-xs font-medium text-red-200/80 transition hover:bg-red-500/10 hover:text-red-200"
-                            >
-                                <LogOut size={16} />
-                                Sign Out
-                            </button>
-                        </div>
-                    )}
                 </div>
             </div>
         </aside>

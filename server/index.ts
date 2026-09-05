@@ -1,19 +1,13 @@
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
+import cookieParser from "cookie-parser";
 
 import attendanceRoutes from "./routes/attendanceRoutes.ts";
+import authRoute from "./routes/authRoutes";
 
 const app = express();
 
-/*
-  Required when the application is behind a proxy.
-  This allows Express to correctly read
-  x-forwarded-for.
-
-  For production, configure this according
-  to your actual proxy/load balancer.
-*/
 app.set("trust proxy", true);
 
 app.use(
@@ -31,6 +25,8 @@ app.use(
     })
 );
 
+app.use(cookieParser());
+
 app.use(morgan("dev"));
 
 /* =========================================================
@@ -42,12 +38,15 @@ app.get("/", (_, res) => {
 });
 
 /* =========================================================
+   AUTH
+========================================================= */
+
+app.use("/auth", authRoute);
+
+/* =========================================================
    ATTENDANCE
 ========================================================= */
 
-app.use(
-    "/api/attendance",
-    attendanceRoutes
-);
+app.use("/api/attendance", attendanceRoutes);
 
 export default app;
