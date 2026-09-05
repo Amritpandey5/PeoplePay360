@@ -1,6 +1,21 @@
-import dotenv from "dotenv";
-dotenv.config();
+import express from 'express'
+import cors from "cors";
+import morgan from "morgan";
 
-import { connectDB } from "./db/db.ts";
-connectDB();
-console.log("Hello via Bun!");
+const app = express();
+
+app.use(cors());
+
+app.use(express.json());
+
+app.use(express.urlencoded({ extended: true }));
+
+app.use(morgan("dev"));
+
+app.get("/", (_, res) => {
+
+    res.send("PeoplePay360 Backend Running");
+
+});
+
+export default app;
