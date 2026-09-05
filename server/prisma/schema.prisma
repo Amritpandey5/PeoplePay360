@@ -1,0 +1,239 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Allowance {
+    id        Int    @id @default(autoincrement())
+    name      String
+    amount    Int
+    salaryId  Int
+    salary    Salary @relation(fields: [salaryId], references: [id], onDelete: Cascade)
+}
+
+model Salary {
+    id          Int         @id @default(autoincrement())
+    ctc         Int
+    base        Int
+    
+    allowances  Allowance[]
+
+    employeeId  Int?        @unique
+    employee    Employee?   @relation(fields: [employeeId], references: [id])
+
+    managerId   Int?        @unique
+    manager     Manager?    @relation(fields: [managerId], references: [id])
+}
+
+model Employee {
+    id          Int             @id @default(autoincrement())
+    name        String
+    email       String          @unique
+    password    String
+    gender      Gender
+    dob         DateTime
+    joining     DateTime
+    role        EmployeeRole
+    status      EmployeeStatus
+    location    String?
+    ip          String           @db.VarChar(45)
+    type        String           @default("employee")
+    attendance  Attendence[]
+    companyId   Int
+    company     Company         @relation(fields: [companyId], references: [id])
+
+    managerId   Int?
+    manager     Manager?        @relation("ManagerEmployees", fields: [managerId], references: [id])
+
+    salary      Salary?
+
+    transactions Transaction[]
+
+    projects    Project[]       @relation("ProjectEmployees")
+    tasks       Task[]
+    salarySlips SalarySlipDocument[]
+    workTime    EmployeeWorkTiming? 
+    tickets     Tickets[]
+}
+
+model Attendence {
+    id          Int             @id @default(autoincrement())
+    employeeId  Int             
+    employee    Employee        @relation(fields: [employeeId], references: [id])
+    date        DateTime        @db.Date
+    status      AttendenceStatus
+    duration    Float
+}
+
+model Manager {
+    id          Int             @id @default(autoincrement())
+    name        String
+    email       String          @unique
+    password    String
+    gender      Gender
+    dob         DateTime
+    joining     DateTime
+    department  Department
+    role        String          @default("Manager")
+    status      EmployeeStatus
+    location    String?
+    ip          String           @db.VarChar(45)
+    type        ManagerType
+
+    companyId   Int
+    company     Company         @relation(fields: [companyId], references: [id])
+
+    managerId   Int?
+    manager     Manager?        @relation("ManagerHierarchy", fields: [managerId], references: [id])
+    subManagers Manager[]       @relation("ManagerHierarchy")
+
+    employees   Employee[]      @relation("ManagerEmployees")
+
+    salary      Salary?
+
+    transactions Transaction[]
+
+    projects    Project[]
+    tasks       Task[]
+    tickets     Tickets[]
+}
+
+model Company {
+    id          Int         @id @default(autoincrement())
+    name        String
+    location    String
+    email       String      @unique
+    password    String
+
+    employees   Employee[]
+    managers    Manager[]
+}
+
+model Transaction {
+    id              Int               @id @default(autoincrement())
+
+    initiatedById   Int
+    initiatedBy     Manager           @relation(fields: [initiatedById], references: [id])
+
+    employeeId      Int
+    employee        Employee          @relation(fields: [employeeId], references: [id])
+
+    amount          Int
+    txnUtr          String            @unique
+    date            DateTime          @default(now())
+    status          TransactionStatus
+}
+
+model Project {
+    id              Int         @id @default(autoincrement())
+
+    assignedById    Int
+    assignedBy      Manager     @relation(fields: [assignedById], references: [id])
+
+    employees       Employee[]  @relation("ProjectEmployees")
+
+    target          DateTime
+    name            String
+    description     String
+}
+
+model Task {
+    id              Int         @id @default(autoincrement())
+
+    assignedById    Int
+    assignedBy      Manager     @relation(fields: [assignedById], references: [id])
+
+    employeeId      Int
+    employee        Employee    @relation(fields: [employeeId], references: [id])
+
+    target          DateTime
+    name            String
+    description     String
+}
+
+model SalarySlipDocument {
+    id          Int       @id @default(autoincrement())
+    url         String
+
+    employeeId  Int
+    employee    Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+    date        DateTime  @default(now())
+}
+
+model EmployeeWorkTiming {
+    id          Int       @id  @default(autoincrement())
+    employeeId  Int       @unique
+    employee    Employee  @relation(fields: [employeeId], references: [id])
+    startTime   DateTime
+    endTime     DateTime
+    working    Boolean
+}
+
+model Tickets {
+    id           Int       @id  @default(autoincrement())
+    employeeId   Int
+    employee     Employee  @relation(fields: [employeeId], references: [id])
+    title        String
+    description  String
+    managerId    Int
+    manager      Manager   @relation(fields: [managerId], references: [id])
+}
+
+enum Gender {
+    Male
+    Female
+    Other
+}
+
+enum EmployeeRole {
+    Developer
+    Designer
+    Staff
+}
+
+enum EmployeeStatus {
+    Active
+    Inactive
+    OnLeave
+    Resigned
+    Onboarding
+}
+
+enum Department {
+    Sales
+    Product
+    Development
+}
+
+enum TransactionStatus {
+    Initiated
+    UnderProcess
+    Completed
+    Pending
+    Failed
+}
+
+enum ManagerType {
+    Hr_Manager
+    Hr_Payroll
+    Hr_Payroll_Manager
+}
+
+enum AttendenceStatus {
+    present
+    absent
+    halfday
+    late
+    leave
+    wfh
+}
