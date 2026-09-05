@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import type {InferSchemaType } from "mongoose"
-import { BaseFields, BaseOptions } from "./BaseModel";
+import { BaseFields } from "./BaseModel";
 import { UserRole } from "../types/enums";
 
 const UserSchema = new Schema(
