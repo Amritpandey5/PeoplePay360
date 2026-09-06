@@ -13,6 +13,8 @@ import {
   LogOut,
   X,
 } from "lucide-react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 type EmployeeSidebarProps = {
   isOpen?: boolean;
@@ -62,6 +64,7 @@ export default function EmployeeSidebar({
   onClose,
 }: EmployeeSidebarProps) {
   const pathname = usePathname();
+  const router = useRouter()
 
   const isActive = (href: string) => {
     if (href === "/employee") {
@@ -163,6 +166,13 @@ export default function EmployeeSidebar({
         {/* Bottom Section */}
         <div className="border-t border-slate-200 p-4">
           <button
+            onClick={async (e) => {
+              e.preventDefault()
+              await axios.post("http://localhost:5000/auth/logout",{},{
+                withCredentials:true
+              })
+              await router.push("http://localhost:3000/auth")
+            }}
             type="button"
             className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-slate-600 transition-colors hover:bg-red-50 hover:text-red-600"
           >

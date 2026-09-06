@@ -81,6 +81,47 @@ export function createContract(
     return contract;
 }
 
+export function updateContract(
+    id: string,
+    contractData: Partial<Omit<Contract, "id" | "createdAt">>
+): Contract | null {
+    const contracts = getContracts();
+    const index = contracts.findIndex(
+        (contract) => contract.id === id
+    );
+
+    if (index === -1) {
+        return null;
+    }
+
+    const updatedContract: Contract = {
+        ...contracts[index],
+        ...contractData,
+    };
+
+    const updatedContracts = [...contracts];
+    updatedContracts[index] = updatedContract;
+
+    saveContracts(updatedContracts);
+
+    return updatedContract;
+}
+
+export function deleteContract(id: string): boolean {
+    const contracts = getContracts();
+    const nextContracts = contracts.filter(
+        (contract) => contract.id !== id
+    );
+
+    if (nextContracts.length === contracts.length) {
+        return false;
+    }
+
+    saveContracts(nextContracts);
+
+    return true;
+}
+
 export function subscribeToContractChanges(
     listener: () => void
 ) {

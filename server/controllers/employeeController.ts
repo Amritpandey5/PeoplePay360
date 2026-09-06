@@ -78,6 +78,12 @@ export const signin = async (req :Express.Request, res: Express.Response) => {
 export const signout = async (req: AuthenticatedRequest, res: Express.Response) => {
     const userid = req.userid
     const type = req.type
+    console.log("USER_ID ===>  ",userid);
+    console.log("TYPE ====> ", type);
+    console.log(req);
+    
+    
+    
     if (!type || !userid || type !== "employee") return res.status(400).json({
         msg: "Unauthorized request"
     })

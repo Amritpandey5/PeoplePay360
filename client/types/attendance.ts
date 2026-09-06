@@ -2,6 +2,7 @@ export type AttendanceStatus =
     | "present"
     | "late"
     | "absent"
+    | "half_day"
     | "working"
     | "not_marked";
 
@@ -13,4 +14,5 @@ export type AttendanceRecord = {
     checkOut: string;
     workingHours: number;
     status: AttendanceStatus;
+    notes?: string;
 };

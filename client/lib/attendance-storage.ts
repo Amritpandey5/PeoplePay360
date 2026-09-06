@@ -28,6 +28,8 @@ export function getAttendanceForDate(
     );
 }
 
+export const getAttendanceByDate = getAttendanceForDate;
+
 export function saveAttendance(
     record: AttendanceRecord
 ): AttendanceRecord {
@@ -55,6 +57,47 @@ export function saveAttendance(
     );
 
     return record;
+}
+
+export function upsertAttendance(
+    record: Omit<AttendanceRecord, "id" | "workingHours"> & {
+        id?: string;
+        workingHours?: number;
+    }
+): AttendanceRecord {
+    const attendanceRecord: AttendanceRecord = {
+        ...record,
+        id:
+            record.id ||
+            `ATT-${Date.now()}-${Math.random()
+                .toString(36)
+                .slice(2, 8)}`,
+        workingHours: record.workingHours ?? 0,
+    };
+
+    return saveAttendance(attendanceRecord);
+}
+
+export function deleteAttendance(id: string): boolean {
+    const records = getAttendanceRecords();
+    const nextRecords = records.filter(
+        (record) => record.id !== id
+    );
+
+    if (nextRecords.length === records.length) {
+        return false;
+    }
+
+    localStorage.setItem(
+        ATTENDANCE_KEY,
+        JSON.stringify(nextRecords)
+    );
+
+    window.dispatchEvent(
+        new Event("peoplepay360-attendance-updated")
+    );
+
+    return true;
 }
 
 export function subscribeToAttendanceChanges(

@@ -34,6 +34,10 @@ export function saveSalaryStructures(
         SALARY_STRUCTURES_KEY,
         JSON.stringify(structures)
     );
+
+    window.dispatchEvent(
+        new Event("peoplepay360-salary-structures-updated")
+    );
 }
 
 export function getSalaryStructureById(
@@ -99,4 +103,43 @@ export function updateSalaryStructure(
     saveSalaryStructures(updatedStructures);
 
     return updatedStructure;
+}
+
+export function deleteSalaryStructure(id: string): boolean {
+    const structures = getSalaryStructures();
+    const nextStructures = structures.filter(
+        (structure) => structure.id !== id
+    );
+
+    if (nextStructures.length === structures.length) {
+        return false;
+    }
+
+    saveSalaryStructures(nextStructures);
+
+    return true;
+}
+
+export function subscribeToSalaryStructureChanges(
+    listener: () => void
+) {
+    if (typeof window === "undefined") {
+        return () => {};
+    }
+
+    const handler = () => listener();
+
+    window.addEventListener(
+        "peoplepay360-salary-structures-updated",
+        handler
+    );
+    window.addEventListener("storage", handler);
+
+    return () => {
+        window.removeEventListener(
+            "peoplepay360-salary-structures-updated",
+            handler
+        );
+        window.removeEventListener("storage", handler);
+    };
 }

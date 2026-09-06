@@ -33,6 +33,10 @@ export function saveSalaryRules(
         SALARY_RULES_KEY,
         JSON.stringify(rules)
     );
+
+    window.dispatchEvent(
+        new Event("peoplepay360-salary-rules-updated")
+    );
 }
 
 export function getSalaryRuleById(
@@ -109,4 +113,28 @@ export function deleteSalaryRule(
             (rule) => rule.id !== id
         )
     );
+}
+
+export function subscribeToSalaryRuleChanges(
+    listener: () => void
+) {
+    if (typeof window === "undefined") {
+        return () => {};
+    }
+
+    const handler = () => listener();
+
+    window.addEventListener(
+        "peoplepay360-salary-rules-updated",
+        handler
+    );
+    window.addEventListener("storage", handler);
+
+    return () => {
+        window.removeEventListener(
+            "peoplepay360-salary-rules-updated",
+            handler
+        );
+        window.removeEventListener("storage", handler);
+    };
 }

@@ -85,6 +85,21 @@ export function updateEmployee(
     return updatedEmployee;
 }
 
+export function deleteEmployee(id: string): boolean {
+    const employees = getEmployees();
+    const nextEmployees = employees.filter(
+        (employee) => employee.id !== id
+    );
+
+    if (nextEmployees.length === employees.length) {
+        return false;
+    }
+
+    saveEmployees(nextEmployees);
+
+    return true;
+}
+
 export function getUsers(): User[] {
     if (typeof window === "undefined") {
         return [];

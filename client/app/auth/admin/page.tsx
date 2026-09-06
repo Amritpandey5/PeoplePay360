@@ -289,6 +289,12 @@ export default function LoginPage() {
                         >
                             {isLoading ? "Signing in..." : "Sign In"}
                         </button>
+                        <Link
+                            href='/auth/admin/create'
+                            className="flex h-12 w-full items-center justify-center rounded-xl bg-[#063d2f] px-5 text-sm font-semibold text-white shadow-lg shadow-emerald-950/10 transition hover:bg-[#07513e] disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                            Create new 
+                        </Link>
                     </form>
 
                     <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-4">
